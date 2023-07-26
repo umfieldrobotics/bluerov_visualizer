@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<robot name="BlueRov2" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:property name="PI" value="3.1415926535897931" />
+
+    <xacro:property name="eps" value="0.00000001" />
+
+    <link name="base_link">
+    </link>
+
+    <link name="camera_link"></link>
+    <joint name="camera_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="camera_link" />
+        <!-- <origin rpy="3.141592653589793 0 1.5707963267948966" xyz="0 0.21 -0.067"/> -->
+        <origin rpy="0 0 0" xyz="0.21 0 0.067" />
+        <axis xyz="1 0 0" />
+    </joint>
+
+    <!-- IMU -->
+    <link name="imu_link" />
+    <joint name="imu_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="imu_link" />
+        <origin rpy="0 0 0" xyz="0 0 0" />
+    </joint>
+
+    <!-- DVL -->
+    <link name="dvl_link" />
+    <joint name="dvl_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="dvl_link" />
+        <origin rpy="0 0 0" xyz="0.08904 0.042 -0.21062" />
+    </joint>
+
+    <!-- Transducer 1 -->
+    <link name="transducer1_link" />
+    <joint name="transducer1_joint" type="fixed">
+        <parent link="dvl_link" />
+        <child link="transducer1_link" />
+        <origin rpy="0.28492413 -0.2740142 -0.0395455" xyz="-0.01385929 -0.01385929 -0.00555" />
+    </joint>
+
+    <!-- Transducer 2 -->
+    <link name="transducer2_link" />
+    <joint name="transducer2_joint" type="fixed">
+        <parent link="dvl_link" />
+        <child link="transducer2_link" />
+        <origin rpy="0.28492413 0.2740142 0.0395455" xyz="0.01385929 -0.01385929 -0.00555" />
+    </joint>
+
+    <!-- Transducer 3 -->
+    <link name="transducer3_link" />
+    <joint name="transducer3_joint" type="fixed">
+        <parent link="dvl_link" />
+        <child link="transducer3_link" />
+        <origin rpy="-0.28492413  0.2740142 -0.0395455" xyz="0.01385929 0.01385929 -0.00555" />
+    </joint>
+
+    <!-- Transducer 4 -->
+    <link name="transducer4_link" />
+    <joint name="transducer4_joint" type="fixed">
+        <parent link="dvl_link" />
+        <child link="transducer4_link" />
+        <origin rpy="-0.28492413 -0.2740142 0.0395455" xyz="-0.01385929 0.01385929 -0.00555" />
+    </joint>
+
+    <!-- ZEDM Base Link -->
+    <link name="zedm_base_link" />
+    <joint name="zedm_base_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="zedm_base_link" />
+        <origin rpy="1.5707963 0 1.5707963" xyz="0.00252551 -0.06238885 0.26832" />
+    </joint>
+
+    <!-- ZEDM Camera Center -->
+    <link name="zedm_camera_center" />
+    <joint name="zedm_camera_center_joint" type="fixed">
+        <parent link="zedm_base_link" />
+        <child link="zedm_camera_center" />
+        <origin rpy="0 0 0" xyz="0 0 0.01325" />
+    </joint>
+
+    <!-- ZEDM Left Camera Frame -->
+    <link name="zedm_left_camera_frame" />
+    <joint name="zedm_left_camera_frame_joint" type="fixed">
+        <parent link="zedm_camera_center" />
+        <child link="zedm_left_camera_frame" />
+        <origin rpy="0 0 0" xyz="0.0 0.03 0" />
+    </joint>
+
+    <!-- ZEDM Left Camera Optical Frame -->
+    <link name="zedm_left_camera_optical_frame" />
+    <joint name="zedm_left_camera_optical_frame_joint" type="fixed">
+        <parent link="zedm_left_camera_frame" />
+        <child link="zedm_left_camera_optical_frame" />
+        <origin rpy="-1.5707963 1.5707963 0" xyz="0 0 0" />
+    </joint>
+
+    <!-- ZEDM Right Camera Frame -->
+    <link name="zedm_right_camera_frame" />
+    <joint name="zedm_right_camera_frame_joint" type="fixed">
+        <parent link="zedm_camera_center" />
+        <child link="zedm_right_camera_frame" />
+        <origin rpy="0 0 0" xyz="0.0 -0.03 0" />
+    </joint>
+
+    <!-- ZEDM Right Camera Optical Frame -->
+    <link name="zedm_right_camera_optical_frame" />
+    <joint name="zedm_right_camera_optical_frame_joint" type="fixed">
+        <parent link="zedm_right_camera_frame" />
+        <child link="zedm_right_camera_optical_frame" />
+        <origin rpy="-1.5707963 1.5707963 0" xyz="0 0 0" />
+    </joint>
+
+    <!-- ZEDM IMU Link -->
+    <link name="zedm_imu_link" />
+    <joint name="zedm_imu_joint" type="fixed">
+        <parent link="zedm_left_camera_frame" />
+        <child link="zedm_imu_link" />
+        <origin rpy="-0.0023399 -0.0037676 0.0077238"
+            xyz="-0.0020000000949949026 -0.015000001527369022 -0.0017100002150982618" />
+    </joint>
+
+</robot>
