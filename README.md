@@ -21,6 +21,7 @@ topics:      /camera/camera_info                                   : sensor_msgs
              /zedm/zed_node/stereo/image_rect_color/compressed     : sensor_msgs/CompressedImage            
              zedm/zed_node/left_raw/image_raw_color/compressed     : sensor_msgs/CompressedImage
 ```
+Use [`svo_utils`](https://github.com/umfieldrobotics/svo_utils) to obtain such rosbags.
 ## Running the Visualizer
 On one terminal:
 ```
