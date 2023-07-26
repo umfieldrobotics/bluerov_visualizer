@@ -101,7 +101,7 @@ int main(int argc, char **argv)
     message_filters::Subscriber<stereo_msgs::DisparityImage> disp_sub(nh, "/zedm/zed_node/disparity/disparity_image", 1);
     ros::Subscriber ros_cam_info_sub = nh.subscribe("/zedm/zed_node/left/camera_info", 1, camera_info_callback);
 
-    pointcloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/zedm/zed_node/pointcloud/registered_pointcloud", 10);
+    pointcloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/pointcloud/registered_projection", 10);
 
     message_filters::TimeSynchronizer<sensor_msgs::Image, stereo_msgs::DisparityImage> sync(rgb_sub, disp_sub, 10);
     sync.registerCallback(boost::bind(&registered_callback, _1, _2));
