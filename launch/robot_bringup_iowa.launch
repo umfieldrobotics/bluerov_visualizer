@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<launch>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bluerov_visualizer)/viz.rviz" />
+    <node name="barometer_converter" pkg="onr_utils" type="change_depth.py" output="log" />
+
+    <!-- Brindup robot from the folder bluerov_model -->
+    <arg name="model" default="$(find bluerov_visualizer)/bluerov_model/BlueRov2_IOWA.urdf.xacro" />
+
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
+    <node
+        name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+        respawn="true" output="screen" />
+
+    <!-- Static transform between map and world -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="map_to_world" args="0 0 0 1 0 0 0 map NED" />
+
+    <!-- Static transform between world and camera -->
+    <node name="acoustics_visualizer" pkg="bluerov_visualizer" type="visualize_acoustics.py" output="screen" />
+
+    <node name="depth_visualizer" pkg="bluerov_visualizer" type="depth_visualizer_node" output="screen" />
+
+        
+    <node
+        name="left_comp2raw" pkg="image_transport" type="republish"
+        args="compressed in:=/zedm/zed_node/left_raw/image_raw_color/ raw out:=/zedm/zed_node/left_raw/image_raw_color/"
+        output="screen" />
+    <node name="right_comp2raw" pkg="image_transport" type="republish"
+        args="compressed in:=/zedm/zed_node/right_raw/image_raw_color raw out:=/zedm/zed_node/right_raw/image_raw_color"
+        output="screen" />
+
+</launch>

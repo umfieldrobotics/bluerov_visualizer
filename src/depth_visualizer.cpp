@@ -19,7 +19,7 @@
 
 ros::Publisher pointcloud_pub;
 sensor_msgs::CameraInfo::ConstPtr ros_cam_info;
-constexpr float baseline = 64e-3; // 64 mm
+constexpr float baseline = 64e-3; // 64 mm, from ZED-M datasheet
 
 
 void camera_info_callback(const sensor_msgs::CameraInfo::ConstPtr &msg)

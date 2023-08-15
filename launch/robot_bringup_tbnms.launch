@@ -5,7 +5,7 @@
     <node name="barometer_converter" pkg="onr_utils" type="change_depth.py" output="log" />
 
     <!-- Brindup robot from the folder bluerov_model -->
-    <arg name="model" default="$(find bluerov_visualizer)/bluerov_model/BlueRov2.urdf.xacro" />
+    <arg name="model" default="$(find bluerov_visualizer)/bluerov_model/BlueRov2_TBNMS.urdf.xacro" />
 
     <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
     <node

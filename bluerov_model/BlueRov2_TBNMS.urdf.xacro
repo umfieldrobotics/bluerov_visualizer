@@ -1,0 +1,323 @@
+<?xml version="1.0"?>
+<robot name="BlueRov2" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="PI" value="3.1415926535897931" />
+  <xacro:property name="PI_2" value="1.5707963267948966" />
+
+  <xacro:property name="eps" value="0.00000001" />
+
+  <!-- Thruster link -->
+  <xacro:macro name="thruster_dummy_link" params="name xyz rpy">
+    <joint name="${name}" type="fixed">
+      <parent link="base_link" />
+      <child link="${name}" />
+      <origin rpy="${rpy}" xyz="${xyz}" />
+    </joint>
+
+    <link name="${name}">
+      <!--buoyancy><compensation>1.0</compensation></buoyancy>
+            <visual name="${name}">
+                <geometry>
+                    <cylinder length=".5" radius=".01"/>
+                </geometry>
+                <material name="black">
+                    <color rgba="0 0 0 1"/>
+                </material>
+            </visual-->
+      <!--inertial>
+                <mass value=".1"/>
+                <inertia
+                    ixx=".1"
+                    ixy="0.0"
+                    ixz="0.0"
+                    iyy=".1"
+                    iyz="0.0"
+                    izz=".1"/>
+                </inertial-->
+    </link>
+    <gazebo reference="${name}">
+      <material>Gazebo/Black</material>
+    </gazebo>
+  </xacro:macro>
+
+
+  <!-- Plugin list -->
+  <gazebo>
+    <!-- Gazebo plugin listens to the body-->
+    <plugin name="freefloating_gazebo_control" filename="libfreefloating_gazebo_control.so">
+      <switchService>switch</switchService>
+      <updateRate>100</updateRate>
+      <link>base_link</link>
+
+      <!-- for each thruster, give the map to XYZ+RPY and the maximum effort -->
+      <!-- Based on 6 thrusters vectored frame https://www.ardusub.com/images/vectored-frame.png -->
+      <!-- BlueRov2 CAD https://grabcad.com/library/bluerov2-1 -->
+      <thruster>
+        <effort>30</effort>
+        <name>thr1</name>
+        <map>0.707 0.707 0 0 0 -0.167</map>
+      </thruster>
+      <thruster>
+        <effort>30</effort>
+        <name>thr2</name>
+        <map>-0.707 0.707 0 0 0 0.167</map>
+      </thruster>
+      <thruster>
+        <effort>30</effort>
+        <name>thr3</name>
+        <map>0.707 -0.707 0 0 0 0.167</map>
+      </thruster>
+      <thruster>
+        <effort>30</effort>
+        <name>thr4</name>
+        <map>-0.707 -0.707 0 0 0 -0.167</map>
+      </thruster>
+      <thruster>
+        <effort>30</effort>
+        <name>thr5</name>
+        <map>0 0 -1 0 -0.111 0</map>
+      </thruster>
+      <thruster>
+        <effort>30</effort>
+        <name>thr6</name>
+        <map>0 0 -1 0 0.111 0</map>
+      </thruster>
+    </plugin>
+  </gazebo>
+
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0.07" rpy="-3.141592653589793 3.141592653589793 1.5707963267948966" />
+      <geometry>
+        <mesh filename="package://bluerov_state_estimation/bluerov_model/BlueRov2.dae" />
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="-3.141592653589793 3.141592653589793 1.5707963267948966" />
+      <mass value="11" />
+      <inertia
+        ixx="1"
+        ixy="0"
+        ixz="0"
+        iyy="1"
+        iyz="0"
+        izz="1" />
+    </inertial>
+    <buoyancy>
+      <compensation>0.2525</compensation>
+      <origin xyz="0.12585 0.111 -0.8945" />
+    </buoyancy>
+    <buoyancy>
+      <compensation>0.2525</compensation>
+      <origin xyz="-0.12585 0.111 -0.8945" />
+    </buoyancy>
+    <buoyancy>
+      <compensation>0.2525</compensation>
+      <origin xyz="-0.12585 -0.111 -0.8945" />
+    </buoyancy>
+    <buoyancy>
+      <compensation>0.2525</compensation>
+      <origin xyz="0.12585 -0.111 -0.8945" />
+    </buoyancy>
+  </link>
+
+  <link name="camera_link">
+  </link>
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="camera_link" />
+    <!-- <origin rpy="3.141592653589793 0 1.5707963267948966" xyz="0 0.21 -0.067"/> -->
+    <origin rpy="0 0 0" xyz="0.21 0 0" />
+    <axis xyz="1 0 0" />
+  </joint>
+
+  <!-- camera -->
+  <gazebo reference="camera_link">
+    <sensor type="camera" name="camera1">
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <update_rate>10.0</update_rate>
+      <camera name="head">
+        <!-- https://elinux.com/Rpi_Camera_Module  -->
+        <horizontal_fov>1.0855</horizontal_fov>
+        <!-- vertical_fov>0.85169</vertical_fov -->
+        <image>
+          <width>1920</width>
+          <height>1080</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.01</near>
+          <far>500</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise is sampled independently per pixel on each frame.
+               That pixel's noise value is added to each of its color
+               channels, which at that point lie in the range [0,1]. -->
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <visualize>true</visualize>
+        <updateRate>30.0</updateRate>
+        <cameraName>camera</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera_link</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- IMU -->
+  <link name="imu_link"></link>
+  <joint name="imu_joint" type="fixed">
+    <parent link="imu_link" />
+    <child link="base_link" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+  </joint>
+
+  <link name="dvl_link"></link>
+  <joint name="dvl_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="dvl_link" />
+    <origin rpy="0 0 0.0505" xyz="0.16443882752 0.00429 0.28362510322" />
+  </joint>
+
+  <link name="transducer1_link"></link>
+  <joint name="transducer1_joint" type="fixed">
+    <parent link="dvl_link" />
+    <child link="transducer1_link" />
+    <origin rpy="-0.28492413 -0.2740142 0.0395455" xyz="-0.01385929 0.01385929 -0.00555" />
+  </joint>
+
+  <link name="transducer2_link"></link>
+  <joint name="transducer2_joint" type="fixed">
+    <parent link="dvl_link" />
+    <child link="transducer2_link" />
+    <origin rpy="0.28492413 -0.2740142 -0.0395455" xyz="-0.01385929 -0.01385929 -0.00555" />
+  </joint>
+
+  <link name="transducer3_link"></link>
+  <joint name="transducer3_joint" type="fixed">
+    <parent link="dvl_link" />
+    <child link="transducer3_link" />
+    <origin rpy="0.28492413 0.2740142 0.0395455" xyz="0.01385929 -0.01385929 -0.00555" />
+  </joint>
+
+  <link name="transducer4_link"></link>
+  <joint name="transducer4_joint" type="fixed">
+    <parent link="dvl_link" />
+    <child link="transducer4_link" />
+    <origin rpy="-0.28492413  0.2740142 -0.0395455" xyz="0.01385929 0.01385929 -0.00555" />
+  </joint>
+
+  <!-- ZEDM Base Link -->
+  <link name="zedm_base_link" />
+  <joint name="zedm_base_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="zedm_base_link" />
+    <origin rpy="0.0 -1.5707963267948966 1.5707963267948966" xyz="0.00252551 -0.06238885 0.26832" />
+  </joint>
+
+  <!-- ZEDM Camera Center -->
+  <link name="zedm_camera_center" />
+  <joint name="zedm_camera_center_joint" type="fixed">
+    <parent link="zedm_base_link" />
+    <child link="zedm_camera_center" />
+    <origin rpy="0 0 0" xyz="0 0 0.01325" />
+  </joint>
+
+  <!-- ZEDM Left Camera Frame -->
+  <link name="zedm_left_camera_frame" />
+  <joint name="zedm_left_camera_frame_joint" type="fixed">
+    <parent link="zedm_camera_center" />
+    <child link="zedm_left_camera_frame" />
+    <origin rpy="0 0 0" xyz="0.0 0.03 0" />
+  </joint>
+
+  <!-- ZEDM Left Camera Optical Frame -->
+  <link name="zedm_left_camera_optical_frame" />
+  <joint name="zedm_left_camera_optical_frame_joint" type="fixed">
+    <parent link="zedm_left_camera_frame" />
+    <child link="zedm_left_camera_optical_frame" />
+    <origin rpy="-1.5707963 1.5707963 0" xyz="0 0 0" />
+  </joint>
+
+  <!-- ZEDM Right Camera Frame -->
+  <link name="zedm_right_camera_frame" />
+  <joint name="zedm_right_camera_frame_joint" type="fixed">
+    <parent link="zedm_camera_center" />
+    <child link="zedm_right_camera_frame" />
+    <origin rpy="0 0 0" xyz="0.0 -0.03 0" />
+  </joint>
+
+  <!-- ZEDM Right Camera Optical Frame -->
+  <link name="zedm_right_camera_optical_frame" />
+  <joint name="zedm_right_camera_optical_frame_joint" type="fixed">
+    <parent link="zedm_right_camera_frame" />
+    <child link="zedm_right_camera_optical_frame" />
+    <origin rpy="-1.5707963 1.5707963 0" xyz="0 0 0" />
+  </joint>
+
+  <!-- ZEDM IMU Link -->
+  <link name="zedm_imu_link" />
+  <joint name="zedm_imu_joint" type="fixed">
+    <parent link="zedm_left_camera_frame" />
+    <child link="zedm_imu_link" />
+    <origin rpy="-0.0023399 -0.0037676 0.0077238"
+      xyz="-0.0020000000949949026 -0.015000001527369022 -0.0017100002150982618" />
+  </joint>
+
+  <!-- VISUALIZATION PURPOSES -->
+  <link name="transducer1_link_viz"></link>
+  <joint name="transducer1_joint_viz" type="fixed">
+    <parent link="dvl_link" />
+    <child link="transducer1_link_viz" />
+    <origin rpy="-2.3562   -1.1781    2.3562" xyz="-0.01385929 0.01385929 -0.00555" />
+  </joint>
+
+  <link name="transducer2_link_viz"></link>
+  <joint name="transducer2_joint_viz" type="fixed">
+    <parent link="dvl_link" />
+    <child link="transducer2_link_viz" />
+    <origin rpy="2.3562   -1.1781   -2.3562" xyz="-0.01385929 -0.01385929 -0.00555" />
+  </joint>
+
+  <link name="transducer3_link_viz"></link>
+  <joint name="transducer3_joint_viz" type="fixed">
+    <parent link="dvl_link" />
+    <child link="transducer3_link_viz" />
+    <origin rpy="0.7854 -1.1781 -0.7854" xyz="0.01385929 -0.01385929 -0.00555" />
+  </joint>
+
+  <link name="transducer4_link_viz"></link>
+  <joint name="transducer4_joint_viz" type="fixed">
+    <parent link="dvl_link" />
+    <child link="transducer4_link_viz" />
+    <origin rpy="-0.7854   -1.1781    0.7854" xyz="0.01385929 0.01385929 -0.00555" />
+  </joint>
+
+  <!-- Sonar -->
+  <link name="sonar_link"></link>
+  <joint name="sonar_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="sonar_link" />
+    <origin rpy="0 0 0" xyz="0.164107 0.10618 0.30638500108" />
+  </joint>
+
+  <link name="sonar_link_viz"></link>
+  <joint name="sonar_joint_viz" type="fixed">
+    <parent link="base_link" />
+    <child link="sonar_link_viz" />
+    <origin rpy="3.1416   -1.5708         0" xyz="0.164107 0.10618 0.30638500108" />
+  </joint>
+</robot>
