@@ -23,10 +23,10 @@
         
     <node
         name="left_comp2raw" pkg="image_transport" type="republish"
-        args="compressed in:=/zedm/zed_node/left_raw/image_raw_color/ raw out:=/zedm/zed_node/left_raw/image_raw_color/"
+        args="compressed in:=/zedm/zed_node/left/image_rect_color/ raw out:=/zedm/zed_node/left/image_rect_color/"
         output="screen" />
     <node name="right_comp2raw" pkg="image_transport" type="republish"
-        args="compressed in:=/zedm/zed_node/right_raw/image_raw_color raw out:=/zedm/zed_node/right_raw/image_raw_color"
+        args="compressed in:=/zedm/zed_node/right/image_rect_color raw out:=/zedm/zed_node/right/image_rect_color"
         output="screen" />
 
 </launch>

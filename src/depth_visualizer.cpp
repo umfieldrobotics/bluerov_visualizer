@@ -83,13 +83,13 @@ void registered_callback(const sensor_msgs::ImageConstPtr &rgb_msg, const stereo
     }
 
     sensor_msgs::PointCloud2 pointcloud_msg;
+
     pcl::toROSMsg(*pointcloud, pointcloud_msg);
 
     pointcloud_msg.header = rgb_msg->header;
     pointcloud_msg.header.frame_id = "zedm_left_camera_frame";
 
     pointcloud_pub.publish(pointcloud_msg);
-
 }
 
 int main(int argc, char **argv)
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "depth_projection");
     ros::NodeHandle nh;
 
-    message_filters::Subscriber<sensor_msgs::Image> rgb_sub(nh, "/zedm/zed_node/left_raw/image_raw_color", 1);
+    message_filters::Subscriber<sensor_msgs::Image> rgb_sub(nh, "/zedm/zed_node/left/image_rect_color", 1);
     message_filters::Subscriber<stereo_msgs::DisparityImage> disp_sub(nh, "/zedm/zed_node/disparity/disparity_image", 1);
     ros::Subscriber ros_cam_info_sub = nh.subscribe("/zedm/zed_node/left/camera_info", 1, camera_info_callback);
 
