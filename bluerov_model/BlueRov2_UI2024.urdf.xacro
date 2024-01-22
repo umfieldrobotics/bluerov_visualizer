@@ -185,7 +185,6 @@
     <origin rpy="0 0 0" xyz="0 0 0" />
   </joint>
 
-  <!-- DVL -->
   <link name="dvl_link"></link>
   <joint name="dvl_joint" type="fixed">
     <parent link="base_link" />
@@ -193,7 +192,6 @@
     <origin rpy="0 0 0.0505" xyz="0.16443882752 0.00429 0.28362510322" />
   </joint>
 
-  <!-- Transducer 1 -->
   <link name="transducer1_link"></link>
   <joint name="transducer1_joint" type="fixed">
     <parent link="dvl_link" />
@@ -201,7 +199,6 @@
     <origin rpy="-0.28492413 -0.2740142 0.0395455" xyz="-0.01385929 0.01385929 -0.00555" />
   </joint>
 
-  <!-- Transducer 2 -->
   <link name="transducer2_link"></link>
   <joint name="transducer2_joint" type="fixed">
     <parent link="dvl_link" />
@@ -209,7 +206,6 @@
     <origin rpy="0.28492413 -0.2740142 -0.0395455" xyz="-0.01385929 -0.01385929 -0.00555" />
   </joint>
 
-  <!-- Transducer 3 -->
   <link name="transducer3_link"></link>
   <joint name="transducer3_joint" type="fixed">
     <parent link="dvl_link" />
@@ -217,7 +213,6 @@
     <origin rpy="0.28492413 0.2740142 0.0395455" xyz="0.01385929 -0.01385929 -0.00555" />
   </joint>
 
-  <!-- Transducer 4 -->
   <link name="transducer4_link"></link>
   <joint name="transducer4_joint" type="fixed">
     <parent link="dvl_link" />
@@ -230,7 +225,7 @@
   <joint name="zedm_base_joint" type="fixed">
     <parent link="base_link" />
     <child link="zedm_base_link" />
-    <origin rpy="0.0318 -1.5708 0.0" xyz="-0.1234754910177292 -0.12034209908167565 0.28534500108" />
+    <origin rpy="0.0 -1.5707963267948966 1.5707963267948966" xyz="0.00252551 -0.06238885 0.26832" />
   </joint>
 
   <!-- ZEDM Camera Center -->
@@ -249,12 +244,13 @@
     <origin rpy="0 0 0" xyz="0.0 0.03 0" />
   </joint>
 
+<!-- Jingyu: fix a possiblely wrong tf - might lead to wrong tf from the  -->
   <!-- ZEDM Left Camera Optical Frame -->
   <link name="zedm_left_camera_optical_frame" />
   <joint name="zedm_left_camera_optical_frame_joint" type="fixed">
     <parent link="zedm_left_camera_frame" />
     <child link="zedm_left_camera_optical_frame" />
-    <origin rpy="-1.5707963 1.5707963 0" xyz="0 0 0" />
+    <origin rpy="-1.5707963 0 -1.5707963" xyz="0 0 0" />
   </joint>
 
   <!-- ZEDM Right Camera Frame -->
@@ -265,12 +261,13 @@
     <origin rpy="0 0 0" xyz="0.0 -0.03 0" />
   </joint>
 
+<!-- Jingyu: fix a possiblely wrong tf - might lead to wrong tf from the  -->
   <!-- ZEDM Right Camera Optical Frame -->
   <link name="zedm_right_camera_optical_frame" />
   <joint name="zedm_right_camera_optical_frame_joint" type="fixed">
     <parent link="zedm_right_camera_frame" />
     <child link="zedm_right_camera_optical_frame" />
-    <origin rpy="-1.5707963 1.5707963 0" xyz="0 0 0" />
+    <origin rpy="-1.5707963 0 -1.5707963" xyz="0 0 0" />
   </joint>
 
   <!-- ZEDM IMU Link -->
@@ -280,21 +277,6 @@
     <child link="zedm_imu_link" />
     <origin rpy="-0.0023399 -0.0037676 0.0077238"
       xyz="-0.0020000000949949026 -0.015000001527369022 -0.0017100002150982618" />
-  </joint>
-  
-  <!-- Sonar -->
-  <link name="sonar_link"></link>
-  <joint name="sonar_joint" type="fixed">
-    <parent link="base_link" />
-    <child link="sonar_link" />
-    <origin rpy="0 0 0" xyz="-0.14902354966 0.0936 0.30638500108" />
-  </joint>
-
-  <link name="sonar_link_viz"></link>
-  <joint name="sonar_joint_viz" type="fixed">
-    <parent link="base_link" />
-    <child link="sonar_link_viz" />
-    <origin rpy="3.1416 -1.5708 0.0" xyz="-0.14902354966 0.0936 0.30638500108" />
   </joint>
 
   <!-- VISUALIZATION PURPOSES -->
@@ -326,4 +308,18 @@
     <origin rpy="-0.7854   -1.1781    0.7854" xyz="0.01385929 0.01385929 -0.00555" />
   </joint>
 
+  <!-- Sonar -->
+  <link name="sonar_link"></link>
+  <joint name="sonar_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="sonar_link" />
+    <origin rpy="0 0 0" xyz="0.164107 0.10618 0.30638500108" />
+  </joint>
+
+  <link name="sonar_link_viz"></link>
+  <joint name="sonar_joint_viz" type="fixed">
+    <parent link="base_link" />
+    <child link="sonar_link_viz" />
+    <origin rpy="3.1416   -1.5708         0" xyz="0.164107 0.10618 0.30638500108" />
+  </joint>
 </robot>

@@ -12,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   waterlinked_a50_ros_driver
   bluerov_state_estimation_online
-  bluerov_mapping_online
+  # bluerov_mapping_online
   message_filters
   pcl_ros
   cv_bridge

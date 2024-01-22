@@ -89,7 +89,7 @@
     <visual>
       <origin xyz="0 0 0.07" rpy="-3.141592653589793 3.141592653589793 1.5707963267948966" />
       <geometry>
-        <mesh filename="package://bluerov_state_estimation/bluerov_model/BlueRov2.dae" />
+        <mesh filename="package://bluerov_visualizer/bluerov_model/BlueRov2.dae" />
       </geometry>
     </visual>
     <inertial>
@@ -244,6 +244,7 @@
     <origin rpy="0 0 0" xyz="0.0 0.03 0" />
   </joint>
 
+<!-- TODO: Jingyu - this transformation might be wrong!!! -->
   <!-- ZEDM Left Camera Optical Frame -->
   <link name="zedm_left_camera_optical_frame" />
   <joint name="zedm_left_camera_optical_frame_joint" type="fixed">
