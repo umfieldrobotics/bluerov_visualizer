@@ -14,8 +14,10 @@
 
     <!-- Static transform between map and world -->
     <node pkg="tf2_ros" type="static_transform_publisher" name="map_to_world" args="0 0 0 1 0 0 0 map NED" />
+
+    <node pkg="tf" type="static_transform_publisher" name="zed_to_sensor" args="0 0 0 0.5 -0.5 0.5 -0.5 zedm_left_camera_optical_frame sensor 10" />
     
-    <node pkg="tf" type="static_transform_publisher" name="static_visu_ned_base_link" args="0 0 0 0 0 0 NED base_link 100" />
+    <node pkg="tf" type="static_transform_publisher" name="static_visu_ned_base_link" args="0 0 0 0 0 0 NED base_link 10" />
 
     <!-- Static transform between world and camera -->
     <!-- <node name="acoustics_visualizer" pkg="bluerov_visualizer" type="visualize_acoustics.py" output="screen" /> -->
