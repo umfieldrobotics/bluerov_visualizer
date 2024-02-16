@@ -228,6 +228,13 @@
     <origin rpy="0.0 -1.5707963267948966 1.5707963267948966" xyz="0.00252551 -0.06238885 0.26832" />
   </joint>
 
+  <!-- <link name="zedm_base_link" />
+  <joint name="zedm_base_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="zedm_base_link" />
+    <origin rpy="-1.5707963267948966 0.0 1.5707963267948966" xyz="0.00252551 -0.06238885 0.26832" />
+  </joint> -->
+
   <!-- ZEDM Camera Center -->
   <link name="zedm_camera_center" />
   <joint name="zedm_camera_center_joint" type="fixed">
@@ -277,6 +284,22 @@
     <child link="zedm_imu_link" />
     <origin rpy="-0.0023399 -0.0037676 0.0077238"
       xyz="-0.0020000000949949026 -0.015000001527369022 -0.0017100002150982618" />
+  </joint>
+
+ <link name="sensor" />
+  <joint name="sensor_joint" type="fixed">
+    <parent link="zedm_left_camera_optical_frame" />
+    <child link="sensor" />
+    <origin rpy="-1.5577479 0.0030325 -1.5733366"
+      xyz="0.07989305 0.08146287 -0.02610534" />
+  </joint>
+
+  <link name="sensor_wgs84" />
+  <joint name="sensor_wgs84_joint" type="fixed">
+    <parent link="zedm_left_camera_optical_frame" />
+    <child link="sensor_wgs84" />
+    <origin rpy="-1.5577479 0.0030325 -1.5733366"
+      xyz="0.07989305 0.08146287 -0.02610534" />
   </joint>
 
   <!-- VISUALIZATION PURPOSES -->
