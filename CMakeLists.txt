@@ -4,14 +4,12 @@ project(bluerov_visualizer)
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   nav_msgs
-  ping_sonar
   roscpp
   rospy
   sensor_msgs
   std_msgs
   tf
   waterlinked_a50_ros_driver
-  bluerov_state_estimation_online
   # bluerov_mapping_online
   message_filters
   pcl_ros
@@ -19,7 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 catkin_package(
- CATKIN_DEPENDS geometry_msgs nav_msgs ping_sonar roscpp rospy sensor_msgs std_msgs tf waterlinked_a50_ros_driver stereo_msgs cv_bridge message_filters pcl_ros
+ CATKIN_DEPENDS geometry_msgs nav_msgs roscpp rospy sensor_msgs std_msgs tf waterlinked_a50_ros_driver stereo_msgs cv_bridge message_filters pcl_ros
 )
 include_directories(
 # include
