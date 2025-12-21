@@ -1,0 +1,191 @@
+<?xml version="1.0"?>
+<robot name="BlueRov2" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="PI" value="3.1415926535897931"/>
+  <xacro:property name="eps" value="0.00000001"/>
+
+  <xacro:macro name="thruster_dummy_link" params="name xyz rpy">
+    <joint name="${name}" type="fixed">
+      <parent link="base_link"/>
+      <child  link="${name}"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+    <link name="${name}"/>
+    <gazebo reference="${name}">
+      <material>Gazebo/Black</material>
+    </gazebo>
+  </xacro:macro>
+
+  <gazebo>
+    <plugin name="freefloating_gazebo_control" filename="libfreefloating_gazebo_control.so">
+      <switchService>switch</switchService>
+      <updateRate>100</updateRate>
+      <link>base_link</link>
+
+      <!-- 6‑thruster vectored frame (see ardusub.com) -->
+      <thruster><effort>30</effort><name>thr1</name><map> 0.707  0.707  0 0 0 -0.167</map></thruster>
+      <thruster><effort>30</effort><name>thr2</name><map>-0.707  0.707  0 0 0  0.167</map></thruster>
+      <thruster><effort>30</effort><name>thr3</name><map> 0.707 -0.707  0 0 0  0.167</map></thruster>
+      <thruster><effort>30</effort><name>thr4</name><map>-0.707 -0.707  0 0 0 -0.167</map></thruster>
+      <thruster><effort>30</effort><name>thr5</name><map> 0      0     -1 0 -0.111 0</map></thruster>
+      <thruster><effort>30</effort><name>thr6</name><map> 0      0     -1 0  0.111 0</map></thruster>
+    </plugin>
+  </gazebo>
+
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="11"/>
+      <inertia ixx="1" iyy="1" izz="1" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+    <buoyancy compensation="0.2525" origin="0.12585  0.111  -0.8945"/>
+    <buoyancy compensation="0.2525" origin="-0.12585 0.111  -0.8945"/>
+    <buoyancy compensation="0.2525" origin="-0.12585 -0.111 -0.8945"/>
+    <buoyancy compensation="0.2525" origin="0.12585  -0.111 -0.8945"/>
+  </link>
+
+  <link name="hull_link">
+    <visual>
+      <origin xyz="0.0 0 0.0" rpy="0 0 -1.57079632679"/>
+      <!-- <origin xyz="0.0082 0 -0.041" rpy="0 0 -1.57079632679"/> -->
+      <geometry>
+        <mesh filename="package://bluerov_visualizer/bluerov_model/BlueRov2.dae"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="base_link_to_hull" type="fixed">
+    <parent link="base_link"/>
+    <child  link="hull_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="monocular_camera_link"/>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="imu_link"/>
+    <child  link="monocular_camera_link"/>
+    <origin xyz="0.062 0.006 -0.175" rpy="1.5707963267948966 0 1.5707963267948966"/>
+  </joint>
+
+  <!-- Gazebo camera sensor -->
+  <gazebo reference="monocular_camera_link">
+    <sensor type="camera" name="mono_cam">
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <update_rate>30.0</update_rate>
+      <camera name="mono">
+        <horizontal_fov>1.0855</horizontal_fov>
+        <image><width>1920</width><height>1080</height><format>R8G8B8</format></image>
+        <clip><near>0.01</near><far>500</far></clip>
+        <noise type="gaussian"><mean>0</mean><stddev>0.007</stddev></noise>
+      </camera>
+      <plugin name="mono_cam_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <cameraName>mono</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>monocular_camera_link</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <link name="barometer_link"/>
+  <joint name="base_to_barometer" type="fixed">
+    <parent link="base_link"/>
+    <child  link="barometer_link"/>
+    <origin xyz="-0.15465 0.0029 -0.12659" rpy="0 0 0"/>
+  </joint>
+
+  <link name="imu_link"/>
+  <joint name="base_to_imu" type="fixed">
+    <parent link="base_link"/>
+    <child  link="imu_link"/>
+    <origin xyz="0.0 0.0 0.0" rpy="0.005 0.008 -0.007"/>
+  </joint>
+
+  <link name="dvl_link"/>
+  <joint name="imu_to_dvl" type="fixed">
+    <parent link="imu_link"/>
+    <child  link="dvl_link"/>
+    <origin xyz="-0.130 -0.094 0.105" rpy="0 0 0"/>
+  </joint>
+
+  <link name="oculus_sonar_link"/>
+  <joint name="imu_to_oculus_sonar" type="fixed">
+    <parent link="imu_link"/>
+    <child  link="oculus_sonar_link"/>
+    <origin xyz="0.068 0.006 -0.338" rpy="-0.005 -0.008 0.007"/>
+  </joint>
+
+  <link name="tilted_oculus_sonar_link"/>
+  <joint name="imu_to_tilted_oculus_sonar" type="fixed">
+    <parent link="imu_link"/>
+    <child  link="tilted_oculus_sonar_link"/>
+    <origin xyz="0.076 0.005 -0.311" rpy="-0.005 -0.270 0.008"/>
+  </joint>
+
+  <link name="uwgps_link"/>
+  <joint name="dvl_to_uwgps" type="fixed">
+    <parent link="base_link"/>
+    <child  link="uwgps_link"/>
+    <origin xyz="-0.125 0.188 -0.292" rpy="-0.005 -0.008 0.007"/>
+  </joint>
+
+
+  <link name="zed_left_camera_fake"/>
+  <joint name="zed_left_camera_fake_joint" type="fixed">
+    <parent link="imu_link"/>
+    <child  link="zed_left_camera_fake"/>
+    <origin xyz="0.03421319 -0.0551672 0.03906599" rpy="-3.13640421 -0.00844751 0.00659642"/>
+  </joint>
+
+  <link name="zed_left_camera"/>
+  <joint name="zed_left_camera_joint" type="fixed">
+    <parent link="imu_link"/>
+    <child  link="zed_left_camera"/>
+    <origin xyz="0.03421319 -0.0551672 0.03906599" rpy="1.56234871 0.00518826 1.57734892"/>
+  </joint>
+
+  <link name="zed_right_camera_fake"/>
+  <joint name="zed_right_camera_fake_joint" type="fixed">
+    <parent link="imu_link"/>
+    <child  link="zed_right_camera_fake"/>
+    <origin xyz="0.03310443 0.0651875 0.03846467" rpy="-3.13684018 -0.00794061 0.00793634"/>
+  </joint>
+
+  <link name="zed_right_camera"/>
+  <joint name="zed_right_camera_joint" type="fixed">
+    <parent link="imu_link"/>
+    <child  link="zed_right_camera"/>
+    <origin xyz="0.03310443 0.0651875 0.03846467" rpy="1.56285563 0.00475232 1.57869492"/>
+  </joint>
+
+  <link name="transducer1_link_viz"></link>
+  <joint name="transducer1_joint_viz" type="fixed">
+    <parent link="dvl_link" />
+    <child link="transducer1_link_viz" />
+    <origin rpy="-2.3562   -1.1781    2.3562" xyz="-0.01385929 0.01385929 -0.00555" />
+  </joint>
+
+  <link name="transducer2_link_viz"></link>
+  <joint name="transducer2_joint_viz" type="fixed">
+    <parent link="dvl_link" />
+    <child link="transducer2_link_viz" />
+    <origin rpy="2.3562   -1.1781   -2.3562" xyz="-0.01385929 -0.01385929 -0.00555" />
+  </joint>
+
+  <link name="transducer3_link_viz"></link>
+  <joint name="transducer3_joint_viz" type="fixed">
+    <parent link="dvl_link" />
+    <child link="transducer3_link_viz" />
+    <origin rpy="0.7854 -1.1781 -0.7854" xyz="0.01385929 -0.01385929 -0.00555" />
+  </joint>
+
+  <link name="transducer4_link_viz"></link>
+  <joint name="transducer4_joint_viz" type="fixed">
+    <parent link="dvl_link" />
+    <child link="transducer4_link_viz" />
+    <origin rpy="-0.7854   -1.1781    0.7854" xyz="0.01385929 0.01385929 -0.00555" />
+  </joint>
+</robot>
