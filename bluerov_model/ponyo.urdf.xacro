@@ -111,28 +111,6 @@
     <origin xyz="-0.130 -0.094 0.105" rpy="0 0 0"/>
   </joint>
 
-  <link name="oculus_sonar_link"/>
-  <joint name="imu_to_oculus_sonar" type="fixed">
-    <parent link="imu_link"/>
-    <child  link="oculus_sonar_link"/>
-    <origin xyz="0.068 0.006 -0.338" rpy="-0.005 -0.008 0.007"/>
-  </joint>
-
-  <link name="tilted_oculus_sonar_link"/>
-  <joint name="imu_to_tilted_oculus_sonar" type="fixed">
-    <parent link="imu_link"/>
-    <child  link="tilted_oculus_sonar_link"/>
-    <origin xyz="0.076 0.005 -0.311" rpy="-0.005 -0.270 0.008"/>
-  </joint>
-
-  <link name="uwgps_link"/>
-  <joint name="dvl_to_uwgps" type="fixed">
-    <parent link="base_link"/>
-    <child  link="uwgps_link"/>
-    <origin xyz="-0.125 0.188 -0.292" rpy="-0.005 -0.008 0.007"/>
-  </joint>
-
-
   <link name="zed_left_camera_fake"/>
   <joint name="zed_left_camera_fake_joint" type="fixed">
     <parent link="imu_link"/>
